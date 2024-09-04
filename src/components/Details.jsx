@@ -1,24 +1,36 @@
-import React, { useContext, useState } from "react";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
-import { validateAllFields } from "../utility/Validation"; // Adjust the path as necessary
-import { useDataContext } from "../context/DataContext";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDataContext } from "../context/DataContext";
+import { validateDetails } from "../utility/Validation"; // Adjust the path as necessary
 
 function Details() {
   const { formData, setFormData } = useDataContext();
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      details: {
+        ...prevData.details,
+        [name]: value,
+      },
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
+
   const navigate = useNavigate();
+
   const handleNextClick = () => {
-    const newErrors = validateAllFields(formData);
+    const newErrors = validateDetails(formData.details);
     setErrors(newErrors);
 
     const noErrors = Object.values(newErrors).every((error) => error === "");
@@ -48,8 +60,7 @@ function Details() {
               label="Company Name"
               name="companyName"
               variant="outlined"
-              sx={{ width: "96vw" }}
-              value={formData.companyName}
+              value={formData.details.companyName}
               onChange={handleChange}
               error={!!errors.companyName}
               helperText={errors.companyName}
@@ -64,8 +75,7 @@ function Details() {
               label="Company Type"
               name="companyType"
               variant="outlined"
-              sx={{ width: "96vw" }}
-              value={formData.companyType}
+              value={formData.details.companyType}
               onChange={handleChange}
               error={!!errors.companyType}
               helperText={errors.companyType}
@@ -80,8 +90,7 @@ function Details() {
               label="Alias"
               name="alias"
               variant="outlined"
-              sx={{ width: "30vw" }}
-              value={formData.alias}
+              value={formData.details.alias}
               onChange={handleChange}
               error={!!errors.alias}
               helperText={errors.alias}
@@ -94,8 +103,7 @@ function Details() {
               label="Company ID"
               name="companyId"
               variant="outlined"
-              sx={{ width: "30vw" }}
-              value={formData.companyId}
+              value={formData.details.companyId}
               onChange={handleChange}
               error={!!errors.companyId}
               helperText={errors.companyId}
@@ -108,8 +116,7 @@ function Details() {
               label="Company Size"
               name="companySize"
               variant="outlined"
-              sx={{ width: "30vw" }}
-              value={formData.companySize}
+              value={formData.details.companySize}
               onChange={handleChange}
               error={!!errors.companySize}
               helperText={errors.companySize}
@@ -124,8 +131,7 @@ function Details() {
               label="Incorporation No."
               name="incorporationNo"
               variant="outlined"
-              sx={{ width: "30vw" }}
-              value={formData.incorporationNo}
+              value={formData.details.incorporationNo}
               onChange={handleChange}
               error={!!errors.incorporationNo}
               helperText={errors.incorporationNo}
@@ -138,8 +144,7 @@ function Details() {
               label="Incorporation Certificate"
               name="incorporationCertificate"
               variant="outlined"
-              sx={{ width: "30vw" }}
-              value={formData.incorporationCertificate}
+              value={formData.details.incorporationCertificate}
               onChange={handleChange}
               error={!!errors.incorporationCertificate}
               helperText={errors.incorporationCertificate}
@@ -152,14 +157,14 @@ function Details() {
               label="Incorporation Date"
               name="incorporationDate"
               variant="outlined"
-              sx={{ width: "30vw" }}
-              value={formData.incorporationDate}
+              value={formData.details.incorporationDate}
               onChange={handleChange}
               error={!!errors.incorporationDate}
               helperText={errors.incorporationDate}
               placeholder="ex:2024-03-05"
             />
           </Grid>
+
           {/* PAN Details, Tax Certification */}
           <Grid item xs={6}>
             <TextField
@@ -168,8 +173,7 @@ function Details() {
               label="PAN Details"
               name="panDetails"
               variant="outlined"
-              sx={{ width: "46vw" }}
-              value={formData.panDetails}
+              value={formData.details.panDetails}
               onChange={handleChange}
               error={!!errors.panDetails}
               helperText={errors.panDetails}
@@ -182,8 +186,7 @@ function Details() {
               label="Tax Certification Details"
               name="taxCertification"
               variant="outlined"
-              sx={{ width: "46vw" }}
-              value={formData.taxCertification}
+              value={formData.details.taxCertification}
               onChange={handleChange}
               error={!!errors.taxCertification}
               helperText={errors.taxCertification}
@@ -198,8 +201,7 @@ function Details() {
               label="Country"
               name="country"
               variant="outlined"
-              sx={{ width: "96vw" }}
-              value={formData.country}
+              value={formData.details.country}
               onChange={handleChange}
               error={!!errors.country}
               helperText={errors.country}
@@ -214,8 +216,7 @@ function Details() {
               label="State"
               name="state"
               variant="outlined"
-              sx={{ width: "30vw" }}
-              value={formData.state}
+              value={formData.details.state}
               onChange={handleChange}
               error={!!errors.state}
               helperText={errors.state}
@@ -228,8 +229,7 @@ function Details() {
               label="City"
               name="city"
               variant="outlined"
-              sx={{ width: "30vw" }}
-              value={formData.city}
+              value={formData.details.city}
               onChange={handleChange}
               error={!!errors.city}
               helperText={errors.city}
@@ -242,8 +242,7 @@ function Details() {
               label="Pincode"
               name="pincode"
               variant="outlined"
-              sx={{ width: "30vw" }}
-              value={formData.pincode}
+              value={formData.details.pincode}
               onChange={handleChange}
               error={!!errors.pincode}
               helperText={errors.pincode}
@@ -258,8 +257,7 @@ function Details() {
               label="Registered Office Address"
               name="registeredOfficeAddress"
               variant="outlined"
-              sx={{ width: "30vw" }}
-              value={formData.registeredOfficeAddress}
+              value={formData.details.registeredOfficeAddress}
               onChange={handleChange}
               error={!!errors.registeredOfficeAddress}
               helperText={errors.registeredOfficeAddress}
@@ -272,8 +270,7 @@ function Details() {
               label="Address"
               name="address"
               variant="outlined"
-              sx={{ width: "30vw" }}
-              value={formData.address}
+              value={formData.details.address}
               onChange={handleChange}
               error={!!errors.address}
               helperText={errors.address}
@@ -286,8 +283,7 @@ function Details() {
               label="WhatsApp Number"
               name="whatsappNumber"
               variant="outlined"
-              sx={{ width: "30vw" }}
-              value={formData.whatsappNumber}
+              value={formData.details.whatsappNumber}
               onChange={handleChange}
               error={!!errors.whatsappNumber}
               helperText={errors.whatsappNumber}
@@ -302,8 +298,7 @@ function Details() {
               label="Mobile Number"
               name="mobileNumber"
               variant="outlined"
-              sx={{ width: "46vw" }}
-              value={formData.mobileNumber}
+              value={formData.details.mobileNumber}
               onChange={handleChange}
               error={!!errors.mobileNumber}
               helperText={errors.mobileNumber}
@@ -316,8 +311,7 @@ function Details() {
               label="Email ID"
               name="emailId"
               variant="outlined"
-              sx={{ width: "46vw" }}
-              value={formData.emailId}
+              value={formData.details.emailId}
               onChange={handleChange}
               error={!!errors.emailId}
               helperText={errors.emailId}

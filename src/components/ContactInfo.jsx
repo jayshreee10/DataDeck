@@ -1,14 +1,55 @@
-import React from "react";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDataContext } from "../context/DataContext";
+import { validateContactInfo } from "../utility/Validation"; // Adjust the path as necessary
 
 function ContactInfo() {
+  const { formData, setFormData } = useDataContext();
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      contact_info: {
+        ...prevData.contact_info,
+        [name]: value,
+      },
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+  };
+
+  const handleNextClick = () => {
+    const newErrors = validateContactInfo(formData.contact_info);
+    setErrors(newErrors);
+
+    const noErrors = Object.values(newErrors).every((error) => error === "");
+
+    if (noErrors) {
+      // Proceed to next step
+      console.log("Form is valid. Proceeding to next step.");
+      navigate("/socialdetails");
+    } else {
+      console.log(newErrors);
+      console.log("Form has errors.");
+    }
+  };
+
+  const handlePreviousClick = () => {
+    navigate("/businessdetails");
+  };
+
   return (
     <div>
-      {/* Heading aligned to the left with a left margin of 10px */}
       <Typography variant="h6" sx={{ marginLeft: "10px", textAlign: "left" }}>
         Contact Info:
       </Typography>
@@ -26,7 +67,12 @@ function ContactInfo() {
               fullWidth
               id="name"
               label="Name"
+              name="name"
               variant="outlined"
+              value={formData.contact_info.name || ""}
+              onChange={handleChange}
+              error={!!errors.name}
+              helperText={errors.name}
               sx={{ width: "30vw" }}
             />
           </Grid>
@@ -35,7 +81,12 @@ function ContactInfo() {
               fullWidth
               id="designation"
               label="Designation"
+              name="designation"
               variant="outlined"
+              value={formData.contact_info.designation || ""}
+              onChange={handleChange}
+              error={!!errors.designation}
+              helperText={errors.designation}
               sx={{ width: "30vw" }}
             />
           </Grid>
@@ -44,7 +95,12 @@ function ContactInfo() {
               fullWidth
               id="role"
               label="Role"
+              name="role"
               variant="outlined"
+              value={formData.contact_info.role || ""}
+              onChange={handleChange}
+              error={!!errors.role}
+              helperText={errors.role}
               sx={{ width: "30vw" }}
             />
           </Grid>
@@ -55,7 +111,12 @@ function ContactInfo() {
               fullWidth
               id="email-id"
               label="Email ID"
+              name="emailId"
               variant="outlined"
+              value={formData.contact_info.emailId || ""}
+              onChange={handleChange}
+              error={!!errors.emailId}
+              helperText={errors.emailId}
               sx={{ width: "45vw" }}
             />
           </Grid>
@@ -64,7 +125,12 @@ function ContactInfo() {
               fullWidth
               id="contact-no"
               label="Contact No."
+              name="contactNumber"
               variant="outlined"
+              value={formData.contact_info.contactNumber || ""}
+              onChange={handleChange}
+              error={!!errors.contactNumber}
+              helperText={errors.contactNumber}
               sx={{ width: "45vw" }}
             />
           </Grid>
@@ -75,10 +141,18 @@ function ContactInfo() {
             xs={12}
             sx={{ display: "flex", justifyContent: "space-between" }}
           >
-            <Button variant="outlined" color="primary">
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handlePreviousClick}
+            >
               Previous
             </Button>
-            <Button variant="outlined" color="primary">
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleNextClick}
+            >
               Next
             </Button>
           </Grid>

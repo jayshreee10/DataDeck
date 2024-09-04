@@ -1,16 +1,56 @@
-import React from "react";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDataContext } from "../context/DataContext";
+import { validateBusinessDetails } from "../utility/Validation"; // Adjust the path as necessary
 
 function BusinessDetails() {
+  const { formData, setFormData } = useDataContext();
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      business_details: {
+        ...prevData.business_details,
+        [name]: value,
+      },
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+  };
+
+  const handleNextClick = () => {
+    const newErrors = validateBusinessDetails(formData.business_details);
+    setErrors(newErrors);
+
+    const noErrors = Object.values(newErrors).every((error) => error === "");
+
+    if (noErrors) {
+      // Proceed to next step
+      console.log("Form is valid. Proceeding to next step.");
+      navigate("/contactinfo");
+    } else {
+      console.log("Form has errors.");
+    }
+  };
+
+  const handlePreviousClick = () => {
+    navigate("/details");
+  };
+
   return (
     <div>
-      {/* Heading aligned to the left with a left margin of 10px */}
       <Typography variant="h6" sx={{ marginLeft: "10px", textAlign: "left" }}>
-        Business Details :
+        Business Details:
       </Typography>
 
       <Box
@@ -20,40 +60,58 @@ function BusinessDetails() {
         sx={{ padding: "10px" }}
       >
         <Grid container spacing={2}>
-          {/* TextField for business details input */}
+          {/* Business Details */}
           <Grid item xs={12}>
             <TextField
               fullWidth
               id="business-details"
               label="Business Details"
+              name="businessDetails"
               variant="outlined"
+              value={formData.business_details.businessDetails || ""}
+              onChange={handleChange}
+              error={!!errors.businessDetails}
+              helperText={errors.businessDetails}
               sx={{ width: "90vw" }}
             />
           </Grid>
 
-          {/* TextArea for additional information */}
+          {/* Additional Information */}
           <Grid item xs={12}>
             <TextField
               fullWidth
               id="additional-info"
               label="Additional Information"
+              name="additionalInformation"
               multiline
               rows={4}
               variant="outlined"
+              value={formData.business_details.additionalInformation || ""}
+              onChange={handleChange}
+              error={!!errors.additionalInformation}
+              helperText={errors.additionalInformation}
               sx={{ width: "90vw" }}
             />
           </Grid>
 
-          {/* Buttons aligned to the left and right */}
+          {/* Buttons */}
           <Grid
             item
             xs={12}
             sx={{ display: "flex", justifyContent: "space-between" }}
           >
-            <Button variant="outlined" color="primary">
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handlePreviousClick}
+            >
               Previous
             </Button>
-            <Button variant="outlined" color="primary">
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleNextClick}
+            >
               Next
             </Button>
           </Grid>
