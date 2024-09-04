@@ -9,7 +9,7 @@ import { useDataContext } from "../context/DataContext"; // Adjust path as neede
 import { validateOtherDetails } from "../utility/Validation"; // Adjust path as needed
 
 function OtherDetails() {
-  const { formData, setFormData } = useDataContext();
+  const { formData, setFormData, sendFormData } = useDataContext();
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
@@ -43,6 +43,7 @@ function OtherDetails() {
       console.log("Form is valid. Submitting...");
       console.log("final data----------------");
       console.log(formData);
+      sendFormData();
       // Perform form submission logic here
     } else {
       console.log("Form has errors.");

@@ -1,14 +1,51 @@
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import FormHelperText from "@mui/material/FormHelperText";
 import Grid from "@mui/material/Grid";
 import Input from "@mui/material/Input";
 import Typography from "@mui/material/Typography";
+import { useDataContext } from "../context/DataContext";
+import { useNavigate } from "react-router-dom";
 
 function BrandInfo() {
+  const [errors, setErrors] = useState({});
+  const { formMedia, setFormMedia } = useDataContext();
+  const navigate = useNavigate();
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setFormMedia({
+      ...formMedia,
+      brand_info: { ...formMedia.brand_info, [name]: files[0] },
+    });
+    setErrors({ ...errors, [name]: "" });
+  };
+
+  const handleNextClick = () => {
+    const newErrors = {};
+
+    if (!formMedia.brand_info.upload_logo) {
+      newErrors.upload_logo = "Upload logo is required.";
+    }
+    if (!formMedia.brand_info.header) {
+      newErrors.header = "Header is required.";
+    }
+    if (!formMedia.brand_info.favicon) {
+      newErrors.favicon = "Favicon is required.";
+    }
+    if (!formMedia.brand_info.footer) {
+      newErrors.footer = "Footer is required.";
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      navigate("/businessdetails");
+    }
+  };
+
   return (
     <div>
-      {/* Heading aligned to the left with a left margin of 10px */}
       <Typography variant="h6" sx={{ marginLeft: "10px", textAlign: "left" }}>
         Brand Info:
       </Typography>
@@ -20,52 +57,68 @@ function BrandInfo() {
         sx={{ padding: "10px" }}
       >
         <Grid container spacing={2}>
-          {/* First row with 2 file upload fields, each 45vw */}
+          {/* Upload Logo */}
           <Grid item xs={12} md={6}>
+            <Typography>Upload Logo</Typography>
             <Input
               type="file"
-              id="file-upload-1"
+              name="upload_logo"
               inputProps={{ accept: ".jpg,.gif,.png" }}
               sx={{ display: "block", marginBottom: "8px", width: "45vw" }}
+              onChange={handleFileChange}
+              error={!!errors.upload_logo}
             />
-            <FormHelperText>
-              Allowed JPG, GIF, PNG, Max size of 800k
-            </FormHelperText>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Input
-              type="file"
-              id="file-upload-2"
-              inputProps={{ accept: ".jpg,.gif,.png" }}
-              sx={{ display: "block", marginBottom: "8px", width: "45vw" }}
-            />
-            <FormHelperText>
-              Allowed JPG, GIF, PNG, Max size of 800k
-            </FormHelperText>
+            <p error={!!errors.upload_logo}>
+              {errors.upload_logo || "Allowed JPG, GIF, PNG, Max size of 800k"}
+            </p>
           </Grid>
 
-          {/* Second row with 2 file upload fields, each 45vw */}
+          {/* Header */}
           <Grid item xs={12} md={6}>
+            <Typography>Header</Typography>
             <Input
               type="file"
-              id="file-upload-3"
+              name="header"
               inputProps={{ accept: ".jpg,.gif,.png" }}
               sx={{ display: "block", marginBottom: "8px", width: "45vw" }}
+              onChange={handleFileChange}
+              error={!!errors.header}
             />
-            <FormHelperText>
-              Allowed JPG, GIF, PNG, Max size of 800k
-            </FormHelperText>
+            <p error={!!errors.header}>
+              {errors.header || "Allowed JPG, GIF, PNG, Max size of 800k"}
+            </p>
           </Grid>
+
+          {/* Favicon */}
           <Grid item xs={12} md={6}>
+            <Typography>Favicon</Typography>
             <Input
               type="file"
-              id="file-upload-4"
+              name="favicon"
               inputProps={{ accept: ".jpg,.gif,.png" }}
               sx={{ display: "block", marginBottom: "8px", width: "45vw" }}
+              onChange={handleFileChange}
+              error={!!errors.favicon}
             />
-            <FormHelperText>
-              Allowed JPG, GIF, PNG, Max size of 800k
-            </FormHelperText>
+            <p error={!!errors.favicon}>
+              {errors.favicon || "Allowed JPG, GIF, PNG, Max size of 800k"}
+            </p>
+          </Grid>
+
+          {/* Footer */}
+          <Grid item xs={12} md={6}>
+            <Typography>Footer</Typography>
+            <Input
+              type="file"
+              name="footer"
+              inputProps={{ accept: ".jpg,.gif,.png" }}
+              sx={{ display: "block", marginBottom: "8px", width: "45vw" }}
+              onChange={handleFileChange}
+              error={!!errors.footer}
+            />
+            <p error={!!errors.footer}>
+              {errors.footer || "Allowed JPG, GIF, PNG, Max size of 800k"}
+            </p>
           </Grid>
 
           {/* Navigation Buttons: Previous and Next */}
@@ -77,7 +130,11 @@ function BrandInfo() {
             <Button variant="outlined" color="primary">
               Previous
             </Button>
-            <Button variant="outlined" color="primary">
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleNextClick}
+            >
               Next
             </Button>
           </Grid>

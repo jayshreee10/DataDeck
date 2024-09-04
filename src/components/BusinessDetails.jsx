@@ -44,7 +44,7 @@ function BusinessDetails() {
   };
 
   const handlePreviousClick = () => {
-    navigate("/details");
+    navigate("/brandinfo");
   };
 
   return (
